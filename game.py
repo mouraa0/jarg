@@ -60,6 +60,9 @@ orange_dot_area.set_position(orange_lane.x - (orange_dot_area.width / 2) + 1, or
 points_area = GameImage('assets/game/points_area.png')
 points_area.set_position((janela.width / 2) - (points_area.width / 2), green_dot_area.y + green_dot_area.height + 25)
 
+combo_counter = GameImage('assets/game/combo_counter_1.png')
+combo_counter.set_position((janela.width / 2) - (combo_counter.width / 2), points_area.y + points_area.height + 25)
+
 def game_loop():
     while True:
         janela.set_background_color((0, 0, 0))
@@ -89,5 +92,7 @@ def game_loop():
 
         points_area.draw()
         janela.draw_text(get_points_in_string(), points_area.x + 8, points_area.y + points_area.height - 8 - 30, size=30, color=(255, 255, 255), font_name='Arial', bold=True, italic=False)
+
+        combo_counter.draw()
 
         janela.update()
