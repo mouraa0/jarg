@@ -3,8 +3,20 @@ from PPlay.keyboard import *
 from PPlay.gameimage import *
 from PPlay.sprite import *
 
+global points_amount
+points_amount = 0
+
+def get_points_in_string():
+    global points_amount
+    return str(points_amount)
+
+def count_points():
+    global points_amount
+    points_amount += 500
+
 janela = Window(800, 600)
 teclado = Keyboard()
+
 
 green_lane = GameImage('assets/game/lane.png')
 red_lane = GameImage('assets/game/lane.png')
@@ -45,13 +57,17 @@ yellow_dot_area.set_position(yellow_lane.x - (yellow_dot_area.width / 2) + 1, ye
 blue_dot_area.set_position(blue_lane.x - (blue_dot_area.width / 2) + 1, blue_lane.height)
 orange_dot_area.set_position(orange_lane.x - (orange_dot_area.width / 2) + 1, orange_lane.height)
 
+points_area = GameImage('assets/game/points_area.png')
+points_area.set_position((janela.width / 2) - (points_area.width / 2), green_dot_area.y + green_dot_area.height + 25)
 
 def game_loop():
-    janela.set_background_color((0, 0, 0))
-
     while True:
+        janela.set_background_color((0, 0, 0))
         if (teclado.key_pressed('esc')):
             return
+        
+        if (teclado.key_pressed('w')):
+            count_points()
         
         green_lane.draw()
         red_lane.draw()
@@ -70,5 +86,8 @@ def game_loop():
         yellow_dot_area.draw()
         blue_dot_area.draw()
         orange_dot_area.draw()
+
+        points_area.draw()
+        janela.draw_text(get_points_in_string(), points_area.x + 8, points_area.y + points_area.height - 8 - 30, size=30, color=(255, 255, 255), font_name='Arial', bold=True, italic=False)
 
         janela.update()
