@@ -1,6 +1,6 @@
 from PPlay.window import *
 from PPlay.sprite import *
-from game import game_loop
+from game.game import game_loop
 
 game_title = 'JARG'
 
