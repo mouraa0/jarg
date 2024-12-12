@@ -2,8 +2,9 @@ from PPlay.window import *
 from PPlay.keyboard import *
 from PPlay.gameimage import *
 from PPlay.sprite import *
-from game.dot import *
-from game.lane import *
+from game.classes.dot import *
+from game.classes.lane import *
+from game.classes.click_area import *
 
 global points_amount
 points_amount = 0
@@ -36,20 +37,14 @@ yellow_dot = Dot('assets/game/yellow_dot.png', yellow_lane.x, yellow_lane.height
 blue_dot = Dot('assets/game/blue_dot.png', blue_lane.x, blue_lane.height)
 orange_dot = Dot('assets/game/orange_dot.png', orange_lane.x, orange_lane.height)
 
-green_dot_area = Sprite('assets/game/dot_area.png')
-red_dot_area = Sprite('assets/game/dot_area.png')
-yellow_dot_area = Sprite('assets/game/dot_area.png')
-blue_dot_area = Sprite('assets/game/dot_area.png')
-orange_dot_area = Sprite('assets/game/dot_area.png')
-
-green_dot_area.set_position(green_lane.x - (green_dot_area.width / 2) + 1, green_lane.height)
-red_dot_area.set_position(red_lane.x - (red_dot_area.width / 2) + 1, red_lane.height)
-yellow_dot_area.set_position(yellow_lane.x - (yellow_dot_area.width / 2) + 1, yellow_lane.height)
-blue_dot_area.set_position(blue_lane.x - (blue_dot_area.width / 2) + 1, blue_lane.height)
-orange_dot_area.set_position(orange_lane.x - (orange_dot_area.width / 2) + 1, orange_lane.height)
+green_click_area = ClickArea('assets/game/dot_area.png', green_lane.x, green_lane.height)
+red_click_area = ClickArea('assets/game/dot_area.png', red_lane.x, red_lane.height)
+yellow_click_area = ClickArea('assets/game/dot_area.png', yellow_lane.x, yellow_lane.height)
+blue_click_area = ClickArea('assets/game/dot_area.png', blue_lane.x, blue_lane.height)
+orange_click_area = ClickArea('assets/game/dot_area.png', orange_lane.x, orange_lane.height)
 
 points_area = GameImage('assets/game/points_area.png')
-points_area.set_position((janela.width / 2) - (points_area.width / 2), green_dot_area.y + green_dot_area.height + 25)
+points_area.set_position((janela.width / 2) - (points_area.width / 2), green_click_area.y + green_click_area.height + 25)
 
 combo_counter = GameImage('assets/game/combo_counter_1.png')
 combo_counter.set_position((janela.width / 2) - (combo_counter.width / 2), points_area.y + points_area.height + 25)
@@ -75,11 +70,11 @@ def game_loop():
         blue_dot.draw()
         orange_dot.draw()
 
-        green_dot_area.draw()
-        red_dot_area.draw()
-        yellow_dot_area.draw()
-        blue_dot_area.draw()
-        orange_dot_area.draw()
+        green_click_area.draw()
+        red_click_area.draw()
+        yellow_click_area.draw()
+        blue_click_area.draw()
+        orange_click_area.draw()
 
         points_area.draw()
         janela.draw_text(get_points_in_string(), points_area.x + 8, points_area.y + points_area.height - 8 - 30, size=30, color=(255, 255, 255), font_name='Arial', bold=True, italic=False)
