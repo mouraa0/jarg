@@ -3,6 +3,7 @@ from PPlay.keyboard import *
 from PPlay.gameimage import *
 from PPlay.sprite import *
 from game.dot import *
+from game.lane import *
 
 global points_amount
 points_amount = 0
@@ -20,21 +21,14 @@ def count_points():
 
 janela = Window(800, 600)
 teclado = Keyboard()
-
-green_lane = GameImage('assets/game/lane.png')
-red_lane = GameImage('assets/game/lane.png')
-yellow_lane = GameImage('assets/game/lane.png')
-blue_lane = GameImage('assets/game/lane.png')
-orange_lane = GameImage('assets/game/lane.png')
-
 lanes_area_width = janela.width / 3
-lanes_spacement = (lanes_area_width - (green_lane.width * 4)) / 4
 
-green_lane.set_position(lanes_area_width - (green_lane.width / 2) , 0)
-red_lane.set_position(lanes_area_width + lanes_spacement, 0)
-yellow_lane.set_position(red_lane.x + red_lane.width + lanes_spacement, 0)
-blue_lane.set_position(yellow_lane.x + red_lane.width + lanes_spacement, 0)
-orange_lane.set_position(blue_lane.x + red_lane.width + lanes_spacement, 0)
+green_lane = Lane('assets/game/lane.png', lanes_area_width, 0, True)
+lanes_spacement = (lanes_area_width - (green_lane.width * 4)) / 4
+red_lane = Lane('assets/game/lane.png', lanes_area_width - green_lane.width, lanes_spacement)
+yellow_lane = Lane('assets/game/lane.png', red_lane.x, lanes_spacement)
+blue_lane = Lane('assets/game/lane.png', yellow_lane.x, lanes_spacement)
+orange_lane = Lane('assets/game/lane.png', blue_lane.x, lanes_spacement)
 
 green_dot = Dot('assets/game/green_dot.png', green_lane.x, green_lane.height)
 red_dot = Dot('assets/game/red_dot.png', red_lane.x, red_lane.height)
