@@ -1,6 +1,6 @@
-from PPlay.sprite import *
+from PPlay.gameimage import *
 
-class ClickArea(Sprite):
+class ClickArea(GameImage):
     def __init__(self, path=str, lane_x=int, lane_y=int):
         super().__init__(path)
         self.set_position(lane_x - (self.width / 2) + 1, lane_y)

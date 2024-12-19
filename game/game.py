@@ -31,17 +31,17 @@ yellow_lane = Lane('assets/game/lane.png', red_lane.x, lanes_spacement)
 blue_lane = Lane('assets/game/lane.png', yellow_lane.x, lanes_spacement)
 orange_lane = Lane('assets/game/lane.png', blue_lane.x, lanes_spacement)
 
-green_dot = Dot('assets/game/green_dot.png', green_lane.x, green_lane.height)
-red_dot = Dot('assets/game/red_dot.png', red_lane.x, red_lane.height)
-yellow_dot = Dot('assets/game/yellow_dot.png', yellow_lane.x, yellow_lane.height)
-blue_dot = Dot('assets/game/blue_dot.png', blue_lane.x, blue_lane.height)
-orange_dot = Dot('assets/game/orange_dot.png', orange_lane.x, orange_lane.height)
-
 green_click_area = ClickArea('assets/game/dot_area.png', green_lane.x, green_lane.height)
 red_click_area = ClickArea('assets/game/dot_area.png', red_lane.x, red_lane.height)
 yellow_click_area = ClickArea('assets/game/dot_area.png', yellow_lane.x, yellow_lane.height)
 blue_click_area = ClickArea('assets/game/dot_area.png', blue_lane.x, blue_lane.height)
 orange_click_area = ClickArea('assets/game/dot_area.png', orange_lane.x, orange_lane.height)
+
+green_dot = Dot('assets/game/green_dot.png', green_lane.x, green_lane.height, green_click_area)
+red_dot = Dot('assets/game/red_dot.png', red_lane.x, red_lane.height, red_click_area)
+yellow_dot = Dot('assets/game/yellow_dot.png', yellow_lane.x, yellow_lane.height, yellow_click_area)
+blue_dot = Dot('assets/game/blue_dot.png', blue_lane.x, blue_lane.height, blue_click_area)
+orange_dot = Dot('assets/game/orange_dot.png', orange_lane.x, orange_lane.height, orange_click_area)
 
 points_area = GameImage('assets/game/points_area.png')
 points_area.set_position((janela.width / 2) - (points_area.width / 2), green_click_area.y + green_click_area.height + 25)
@@ -50,6 +50,8 @@ combo_counter = GameImage('assets/game/combo_counter_1.png')
 combo_counter.set_position((janela.width / 2) - (combo_counter.width / 2), points_area.y + points_area.height + 25)
 
 def game_loop():
+    global points_amount
+
     while True:
         janela.set_background_color((0, 0, 0))
         if (teclado.key_pressed('esc')):
@@ -57,6 +59,17 @@ def game_loop():
         
         if (teclado.key_pressed('w')):
             count_points()
+
+        if (teclado.key_pressed('d')):
+            gained_points = green_dot.handle_click(1)
+            if gained_points < 0:
+                pass
+                # handle_miss()
+            
+            else:
+                points_amount += gained_points
+
+            print(points_amount)
         
         green_lane.draw()
         red_lane.draw()
@@ -64,7 +77,7 @@ def game_loop():
         blue_lane.draw()
         orange_lane.draw()
 
-        green_dot.draw()
+        green_dot.move(janela.delta_time())
         red_dot.draw()
         yellow_dot.draw()
         blue_dot.draw()
