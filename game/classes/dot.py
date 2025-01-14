@@ -21,15 +21,15 @@ class Dot(Sprite):
         
         self.draw()
 
-    def handle_click(self, multiplier):
-        gained_points = -1
+    def handle_click(self):
+        hit = False
 
         if self.y + self.height > self.click_area.y:
-            gained_points = self.points * multiplier
+            hit = True
         
         self.y = self.initial_height
 
-        return gained_points
+        return hit
         
 
 

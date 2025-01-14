@@ -7,6 +7,9 @@ from game.classes.lane import *
 from game.classes.click_area import *
 
 global points_amount
+global multiplier_amount
+global combo_counter
+multiplier_amount = 1
 points_amount = 0
 
 
@@ -18,6 +21,22 @@ def get_points_in_string():
 def count_points():
     global points_amount
     points_amount += 500
+
+
+def handle_miss():
+    global multiplier_amount
+    print('here')
+    multiplier_amount = 1
+
+
+def handle_hit():
+    global multiplier_amount
+    global points_amount
+    print(multiplier_amount)
+    points_amount += 4 * multiplier_amount
+
+    if multiplier_amount < 4:
+        multiplier_amount += 1    
 
 
 janela = Window(800, 600)
@@ -46,8 +65,8 @@ orange_dot = Dot('assets/game/orange_dot.png', orange_lane.x, orange_lane.height
 points_area = GameImage('assets/game/points_area.png')
 points_area.set_position((janela.width / 2) - (points_area.width / 2), green_click_area.y + green_click_area.height + 25)
 
-combo_counter = GameImage('assets/game/combo_counter_1.png')
-combo_counter.set_position((janela.width / 2) - (combo_counter.width / 2), points_area.y + points_area.height + 25)
+multiplier = GameImage('assets/game/combo_counter_1.png')
+multiplier.set_position((janela.width / 2) - (multiplier.width / 2), points_area.y + points_area.height + 25)
 
 def game_loop():
     global points_amount
@@ -61,15 +80,11 @@ def game_loop():
             count_points()
 
         if (teclado.key_pressed('d')):
-            gained_points = green_dot.handle_click(1)
-            if gained_points < 0:
-                pass
-                # handle_miss()
-            
+            hit = green_dot.handle_click()
+            if hit:
+                handle_hit()
             else:
-                points_amount += gained_points
-
-            print(points_amount)
+                handle_miss()
         
         green_lane.draw()
         red_lane.draw()
@@ -92,6 +107,6 @@ def game_loop():
         points_area.draw()
         janela.draw_text(get_points_in_string(), points_area.x + 8, points_area.y + points_area.height - 8 - 30, size=30, color=(255, 255, 255), font_name='Arial', bold=True, italic=False)
 
-        combo_counter.draw()
+        multiplier.draw()
 
         janela.update()
