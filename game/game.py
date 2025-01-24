@@ -1,3 +1,4 @@
+import datetime
 import random
 from PPlay.window import *
 from PPlay.keyboard import *
@@ -197,10 +198,14 @@ def end_game():
     global highest_streak
     global total_misses
 
+    current_time = datetime.datetime.now()
+    date_str = current_time.strftime("%d/%m/%Y")
+    time_str = current_time.strftime("%H:%M")
+
     if highest_streak < actual_streak:
         highest_streak = actual_streak
 
-    return stats_loop(Stat('20/20/2000', '20:20', points_amount, highest_streak, total_misses))
+    return stats_loop(Stat(date_str, time_str, points_amount, highest_streak, total_misses))
     
 
 def game_loop(janela, difficulty='easy'):
