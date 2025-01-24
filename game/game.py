@@ -255,7 +255,7 @@ def game_loop(janela, difficulty='easy'):
 
     keys = ['d', 'f', 'j', 'k', 'l']
 
-    debounce_time = 0.2
+    debounce_time = 0.3
     click_time = 0
     elapsed_time = 0
     maximum_elapsed_time = get_maximum_elapsed_time(difficulty)

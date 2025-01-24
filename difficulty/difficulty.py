@@ -1,5 +1,5 @@
 from PPlay.keyboard import *
-from game.game import *
+from tutorial.tutorial import tutorial_loop
 
 def difficulty_loop(janela):
     teclado = Keyboard()
@@ -14,12 +14,12 @@ def difficulty_loop(janela):
         janela.draw_text("Aperte '3' para Difícil", 20, 200, size=30, color=(255, 255, 255))
 
         if teclado.key_pressed('1'):
-            return game_loop(janela, 'easy')
+            return tutorial_loop(janela, 'easy')
         
         if teclado.key_pressed('2'):
-            return game_loop(janela, 'medium')
+            return tutorial_loop(janela, 'medium')
         
         if teclado.key_pressed('3'):
-            return game_loop(janela, 'hard')
+            return tutorial_loop(janela, 'hard')
 
         janela.update()
