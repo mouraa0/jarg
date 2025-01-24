@@ -6,11 +6,14 @@ from PPlay.sprite import *
 from game.classes.dot import *
 from game.classes.lane import *
 from game.classes.click_area import *
+from game.classes.multiplier import *
 
 global points_amount
 global multiplier_amount
+global multiplier_streak_amount
 global combo_counter
 multiplier_amount = 1
+multiplier_streak_amount = 0
 points_amount = 0
 
 
@@ -26,19 +29,37 @@ def count_points():
 
 def handle_miss(click_area):
     global multiplier_amount
-    print('here')
+    global multiplier_streak_amount
     click_area.miss()
     multiplier_amount = 1
+    multiplier_streak_amount = 0
 
 
 def handle_hit():
     global multiplier_amount
+    global multiplier_streak_amount
     global points_amount
-    print(multiplier_amount)
+    print(f'points gained: {4 * multiplier_amount}')
+
     points_amount += 4 * multiplier_amount
 
-    if multiplier_amount < 4:
-        multiplier_amount += 1    
+    if multiplier_amount == 4:
+        return
+
+    if multiplier_streak_amount < 3:
+        multiplier_streak_amount += 1
+
+        return
+
+    if multiplier_amount == 3 and multiplier_streak_amount == 3:
+        multiplier_amount += 1
+        multiplier_streak_amount = 3
+
+        return
+
+
+    multiplier_amount += 1
+    multiplier_streak_amount = 0  
 
 
 def clean_active_notes(active_notes):
@@ -118,7 +139,7 @@ def get_click_area_by_key(key, click_areas):
     
     if (key == 'l'):
         return click_areas[4]
-    
+
 
 def get_maximum_elapsed_time(difficulty):
     if difficulty == 'easy':
@@ -177,11 +198,13 @@ orange_dot = Dot('assets/game/orange_dot.png', orange_lane.x, orange_lane.height
 points_area = GameImage('assets/game/points_area.png')
 points_area.set_position((janela.width / 2) - (points_area.width / 2), green_click_area.y + green_click_area.height + 25)
 
-multiplier = GameImage('assets/game/combo_counter_1.png')
-multiplier.set_position((janela.width / 2) - (multiplier.width / 2), points_area.y + points_area.height + 25)
+multiplier = Multiplier('assets/game/combo_counters/combo_counter_1_0.png', (janela.width / 2), points_area.y + points_area.height + 25)
 
 def game_loop(difficulty='hard'):
     global points_amount
+    global multiplier_amount
+    global multiplier_streak_amount
+
     chart_time = 0
 
     lanes = [green_lane, red_lane, yellow_lane, blue_lane, orange_lane]
@@ -256,7 +279,7 @@ def game_loop(difficulty='hard'):
         janela.draw_text(get_points_in_string(), points_area.x + 8, points_area.y + points_area.height - 8 - 30, size=30, color=(255, 255, 255), font_name='Arial', bold=True, italic=False)
         janela.draw_text(format_countdown(countdown), 20, 20, size=30, color=(255, 255, 255), font_name='Arial', bold=True, italic=False)
 
-        multiplier.draw()
+        multiplier.update(multiplier_amount, multiplier_streak_amount)
 
         chart_time += janela.delta_time()
         janela.update()
