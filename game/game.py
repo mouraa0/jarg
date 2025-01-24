@@ -162,7 +162,7 @@ yellow_lane = Lane('assets/game/lane.png', red_lane.x, lanes_spacement)
 blue_lane = Lane('assets/game/lane.png', yellow_lane.x, lanes_spacement)
 orange_lane = Lane('assets/game/lane.png', blue_lane.x, lanes_spacement)
 
-green_click_area = ClickArea('assets/game/hit_dot_area.png', green_lane.x, green_lane.height)
+green_click_area = ClickArea('assets/game/dot_area.png', green_lane.x, green_lane.height)
 red_click_area = ClickArea('assets/game/dot_area.png', red_lane.x, red_lane.height)
 yellow_click_area = ClickArea('assets/game/dot_area.png', yellow_lane.x, yellow_lane.height)
 blue_click_area = ClickArea('assets/game/dot_area.png', blue_lane.x, blue_lane.height)
@@ -197,11 +197,21 @@ def game_loop(difficulty='hard'):
     elapsed_time = 0
     maximum_elapsed_time = get_maximum_elapsed_time(difficulty)
     countdown = get_countdown_time(difficulty)
+    initial_countdown = 0
+    initial_countdown_limit = 2
+    game_started = False
 
     while True:
         janela.set_background_color((0, 0, 0))
 
-        elapsed_time += janela.delta_time()
+        if game_started:
+            elapsed_time += janela.delta_time()
+
+        if initial_countdown < initial_countdown_limit:
+            initial_countdown += janela.delta_time()
+
+        if initial_countdown >= initial_countdown_limit and not game_started:
+            game_started = True
 
         if click_time != 0:
             click_time += janela.delta_time()
@@ -209,7 +219,7 @@ def game_loop(difficulty='hard'):
             if click_time >= debounce_time:
                 click_time = 0
 
-        if countdown > 0:
+        if countdown > 0 and game_started:
             countdown -= janela.delta_time()
         
         if (teclado.key_pressed('esc')):
@@ -220,7 +230,7 @@ def game_loop(difficulty='hard'):
                 click_time += janela.delta_time()
                 verify_key_stroke(key, active_notes, click_areas)
         
-        if elapsed_time >= maximum_elapsed_time and countdown >= 0:
+        if elapsed_time >= maximum_elapsed_time and countdown >= 0 and game_started:
             add_random_dot(active_notes, lanes, click_areas, colors)
 
             elapsed_time = 0
