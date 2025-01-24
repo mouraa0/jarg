@@ -5,7 +5,7 @@ from stats.classes.stat import Stat
 
 def save_stat(stat):
     try:
-        with open('ranking.json', 'r') as file:
+        with open('ranking/ranking.json', 'r') as file:
             data = json.load(file)
     except FileNotFoundError:
         data = []
@@ -18,7 +18,7 @@ def save_stat(stat):
         'misses': stat.misses
     })
 
-    with open('ranking.json', 'w') as file:
+    with open('ranking/ranking.json', 'w') as file:
         json.dump(data, file, indent=4)
 
         

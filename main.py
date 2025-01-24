@@ -1,6 +1,7 @@
 from PPlay.window import *
 from PPlay.sprite import *
 from difficulty.difficulty import difficulty_loop
+from ranking.ranking import ranking_loop
 
 game_title = 'JARG'
 
@@ -24,8 +25,8 @@ while True:
     if (mouse.is_over_object(button_jogar) and mouse.is_button_pressed(1)):
         difficulty_loop(janela)
     
-    # if (mouse.is_over_object(button_ranking) and mouse.is_button_pressed(1)):
-    #     stats_loop(Stat('20/20/2000', '20:20', 100, 10, 0))
+    if (mouse.is_over_object(button_ranking) and mouse.is_button_pressed(1)):
+        ranking_loop()
 
     if (mouse.is_over_object(button_sair) and mouse.is_button_pressed(1)):
         break

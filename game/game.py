@@ -175,7 +175,7 @@ def get_maximum_elapsed_time(difficulty):
 
 def get_countdown_time(difficulty):
     if difficulty == 'easy':
-        return 10
+        return 30
 
     if difficulty == 'medium':
         return 60
