@@ -74,27 +74,23 @@ def create_dot(color, lane, click_area):
     return Dot(asset_str, lane.x, lane.height, click_area, keyboard_key)
 
 
-def verify_key_stroke(key, active_notes):
-    # if cron != 0:
-    #     return
+def verify_key_stroke(key, active_notes, key_timers, debounce_time, current_time):
+    if key_timers[key] > 0 and current_time - key_timers[key] < debounce_time:
+        key_timers[key] = current_time
+        return
+    
+    key_timers[key] = current_time
 
-    if teclado.key_pressed(key): 
+    if key == active_notes[0].keyboard_key:
+        did_hit = active_notes[0].handle_click()
 
-        if key == active_notes[0].keyboard_key:
-            did_hit = active_notes[0].handle_click()
+        if did_hit:
+            handle_hit()
+            active_notes.pop(0)
 
-            if did_hit:
-                handle_hit()
-                active_notes.pop(0)
+        else:
+            handle_miss()
 
-                # return active_notes
-
-            # return active_notes
-
-        handle_miss()
-        # return active_notes
-
-    # return active_notes
 
 
 janela = Window(800, 600)
@@ -153,6 +149,15 @@ def game_loop():
     #     'l': False
     # }
 
+    key_timers = {
+        'd': 0,
+        'f': 0,
+        'j': 0,
+        'k': 0,
+        'l': 0
+    }
+    debounce_time = 0.2
+
     while True:
         janela.set_background_color((0, 0, 0))
         
@@ -167,11 +172,9 @@ def game_loop():
             note_index += 1
         
         if len(active_notes) > 0:
-            verify_key_stroke('d', active_notes)
-            verify_key_stroke('f', active_notes)
-            verify_key_stroke('j', active_notes)
-            verify_key_stroke('k', active_notes)
-            verify_key_stroke('l', active_notes)
+             for key in key_timers.keys():
+                if teclado.key_pressed(key):
+                    verify_key_stroke(key, active_notes, key_timers, debounce_time, janela.delta_time())
             # if (teclado.key_pressed('d')):
             #     if active_notes[0].keyboard_key == 'd':
             #         hit = active_notes[0].handle_click()
