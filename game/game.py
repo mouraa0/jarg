@@ -127,8 +127,6 @@ def game_loop():
     chart_time = 0
     note_index = 0
 
-    click_cron = 0
-
     chart = [
         {"time": 1.0, "dot": create_dot('green', green_lane, green_click_area)},
         {"time": 1.5, "dot": create_dot('red', red_lane, red_click_area)},
@@ -140,14 +138,6 @@ def game_loop():
     ]
 
     active_notes = []
-
-    # key_states = {
-    #     'd': False,
-    #     'f': False,
-    #     'j': False,
-    #     'k': False,
-    #     'l': False
-    # }
 
     key_timers = {
         'd': 0,
@@ -175,50 +165,6 @@ def game_loop():
              for key in key_timers.keys():
                 if teclado.key_pressed(key):
                     verify_key_stroke(key, active_notes, key_timers, debounce_time, janela.delta_time())
-            # if (teclado.key_pressed('d')):
-            #     if active_notes[0].keyboard_key == 'd':
-            #         hit = active_notes[0].handle_click()
-            #         active_notes.pop(0)
-            #     if hit:
-            #         handle_hit()
-            #     else:
-            #         handle_miss()
-            
-            # if (teclado.key_pressed('f')):
-            #     if active_notes[0].keyboard_key == 'f':
-            #         hit = active_notes[0].handle_click()
-            #         active_notes.pop(0)
-            #     if hit:
-            #         handle_hit()
-            #     else:
-            #         handle_miss()
-            
-            # if (teclado.key_pressed('j')):
-            #     if active_notes[0].keyboard_key == 'j':
-            #         hit = active_notes[0].handle_click()
-            #         active_notes.pop(0)
-            #     if hit:
-            #         handle_hit()
-            #     else:
-            #         handle_miss()
-            
-            # if (teclado.key_pressed('k')):
-            #     if active_notes[0].keyboard_key == 'k':
-            #         hit = active_notes[0].handle_click()
-            #         active_notes.pop(0)
-            #     if hit:
-            #         handle_hit()
-            #     else:
-            #         handle_miss()
-            
-            # if (teclado.key_pressed('l')):
-            #     if active_notes[0].keyboard_key == 'l':
-            #         hit = active_notes[0].handle_click()
-            #         active_notes.pop(0)
-            #     if hit:
-            #         handle_hit()
-            #     else:
-            #         handle_miss()
         
         green_lane.draw()
         red_lane.draw()
@@ -231,13 +177,6 @@ def game_loop():
 
 
         active_notes = clean_active_notes(active_notes)
-
-
-        # green_dot.move(janela.delta_time())
-        # red_dot.draw()
-        # yellow_dot.draw()
-        # blue_dot.draw()
-        # orange_dot.draw()
 
         green_click_area.draw()
         red_click_area.draw()
