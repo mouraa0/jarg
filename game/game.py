@@ -142,16 +142,6 @@ def game_loop():
     click_areas = [green_click_area, red_click_area, yellow_click_area, blue_click_area, orange_click_area]
     colors = ['green', 'red', 'yellow', 'blue', 'orange']
 
-    # chart = [
-    #     {"time": 1.0, "dot": create_dot('green', green_lane, green_click_area)},
-    #     {"time": 1.5, "dot": create_dot('red', red_lane, red_click_area)},
-    #     {"time": 2.0, "dot": create_dot('yellow', yellow_lane, yellow_click_area)},
-    #     {"time": 2.5, "dot": create_dot('blue', blue_lane, blue_click_area)},
-    #     {"time": 3.0, "dot": create_dot('orange', orange_lane, orange_click_area)},
-    #     {"time": 4.0, "dot": create_dot('green', green_lane, green_click_area)},
-    #     {"time": 4.0, "dot": create_dot('orange', orange_lane, orange_click_area)},
-    # ]
-
     active_notes = []
 
     key_timers = {
@@ -164,23 +154,27 @@ def game_loop():
 
     debounce_time = 0.2
     elapsed_time = 0
+    countdown = 30
 
     while True:
         janela.set_background_color((0, 0, 0))
 
         elapsed_time += janela.delta_time()
+
+        if countdown > 0:
+            countdown -= janela.delta_time()
         
         if (teclado.key_pressed('esc')):
             return
         
         if (teclado.key_pressed('w')):
             count_points()
-        
+
         for key in key_timers.keys():
             if teclado.key_pressed(key):
                 verify_key_stroke(key, active_notes, key_timers, debounce_time, janela.delta_time())
         
-        if elapsed_time >= 1:
+        if elapsed_time >= 1 and countdown >= 0:
             add_random_dot(active_notes, lanes, click_areas, colors)
 
             elapsed_time = 0
@@ -205,6 +199,7 @@ def game_loop():
 
         points_area.draw()
         janela.draw_text(get_points_in_string(), points_area.x + 8, points_area.y + points_area.height - 8 - 30, size=30, color=(255, 255, 255), font_name='Arial', bold=True, italic=False)
+        janela.draw_text(str(round(countdown)), 20, 20, size=30, color=(255, 255, 255), font_name='Arial', bold=True, italic=False)
 
         multiplier.draw()
 
