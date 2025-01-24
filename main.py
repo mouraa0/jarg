@@ -1,8 +1,6 @@
 from PPlay.window import *
 from PPlay.sprite import *
-from game.game import game_loop
-from stats.classes.stat import Stat
-from stats.stats import stats_loop
+from difficulty.difficulty import difficulty_loop
 
 game_title = 'JARG'
 
@@ -24,7 +22,7 @@ while True:
     janela.set_background_color((0, 0, 0))
 
     if (mouse.is_over_object(button_jogar) and mouse.is_button_pressed(1)):
-        game_loop(janela)
+        difficulty_loop(janela)
     
     # if (mouse.is_over_object(button_ranking) and mouse.is_button_pressed(1)):
     #     stats_loop(Stat('20/20/2000', '20:20', 100, 10, 0))
