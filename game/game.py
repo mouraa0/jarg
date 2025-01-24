@@ -24,9 +24,10 @@ def count_points():
     points_amount += 500
 
 
-def handle_miss():
+def handle_miss(click_area):
     global multiplier_amount
-    print('error')
+    print('here')
+    click_area.miss()
     multiplier_amount = 1
 
 
@@ -43,6 +44,7 @@ def handle_hit():
 def clean_active_notes(active_notes):
     for note in active_notes:
         if note.missed:
+            handle_miss(note.click_area)
             active_notes.remove(note)
     
     return active_notes
@@ -85,7 +87,7 @@ def add_random_dot(active_notes, lanes, click_areas, colors):
     active_notes.append(new_dot)
 
 
-def verify_key_stroke(key, active_notes):
+def verify_key_stroke(key, active_notes, click_areas):
     if key == active_notes[0].keyboard_key:
         did_hit = active_notes[0].handle_click()
 
@@ -94,8 +96,29 @@ def verify_key_stroke(key, active_notes):
             active_notes.pop(0)
 
         else:
-            handle_miss()
+            handle_miss(get_click_area_by_key(key, click_areas))
+        
+        return
+    
+    handle_miss(get_click_area_by_key(key, click_areas))
 
+
+def get_click_area_by_key(key, click_areas):
+    if (key == 'd'):
+        return click_areas[0]
+    
+    if (key == 'f'):
+        return click_areas[1]
+
+    if (key == 'j'):
+        return click_areas[2]
+    
+    if (key == 'k'):
+        return click_areas[3]
+    
+    if (key == 'l'):
+        return click_areas[4]
+    
 
 def get_maximum_elapsed_time(difficulty):
     if difficulty == 'easy':
@@ -139,7 +162,7 @@ yellow_lane = Lane('assets/game/lane.png', red_lane.x, lanes_spacement)
 blue_lane = Lane('assets/game/lane.png', yellow_lane.x, lanes_spacement)
 orange_lane = Lane('assets/game/lane.png', blue_lane.x, lanes_spacement)
 
-green_click_area = ClickArea('assets/game/dot_area.png', green_lane.x, green_lane.height)
+green_click_area = ClickArea('assets/game/hit_dot_area.png', green_lane.x, green_lane.height)
 red_click_area = ClickArea('assets/game/dot_area.png', red_lane.x, red_lane.height)
 yellow_click_area = ClickArea('assets/game/dot_area.png', yellow_lane.x, yellow_lane.height)
 blue_click_area = ClickArea('assets/game/dot_area.png', blue_lane.x, blue_lane.height)
@@ -160,7 +183,6 @@ multiplier.set_position((janela.width / 2) - (multiplier.width / 2), points_area
 def game_loop(difficulty='hard'):
     global points_amount
     chart_time = 0
-    note_index = 0
 
     lanes = [green_lane, red_lane, yellow_lane, blue_lane, orange_lane]
     click_areas = [green_click_area, red_click_area, yellow_click_area, blue_click_area, orange_click_area]
@@ -196,7 +218,7 @@ def game_loop(difficulty='hard'):
         for key in keys:
             if teclado.key_pressed(key) and click_time == 0:
                 click_time += janela.delta_time()
-                verify_key_stroke(key, active_notes)
+                verify_key_stroke(key, active_notes, click_areas)
         
         if elapsed_time >= maximum_elapsed_time and countdown >= 0:
             add_random_dot(active_notes, lanes, click_areas, colors)
@@ -210,15 +232,15 @@ def game_loop(difficulty='hard'):
         orange_lane.draw()
 
         for note in active_notes:
-            note.move(janela.delta_time(), handle_miss)
+            note.move(janela.delta_time())
 
         active_notes = clean_active_notes(active_notes)
 
-        green_click_area.draw()
-        red_click_area.draw()
-        yellow_click_area.draw()
-        blue_click_area.draw()
-        orange_click_area.draw()
+        green_click_area.update()
+        red_click_area.update()
+        yellow_click_area.update()
+        blue_click_area.update()
+        orange_click_area.update()
 
         points_area.draw()
         janela.draw_text(get_points_in_string(), points_area.x + 8, points_area.y + points_area.height - 8 - 30, size=30, color=(255, 255, 255), font_name='Arial', bold=True, italic=False)

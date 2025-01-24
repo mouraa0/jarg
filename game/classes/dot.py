@@ -16,12 +16,11 @@ class Dot(Sprite):
         # self.set_sequence(0, 0, 0, 0)
 
 
-    def move(self, delta_time, handle_miss):
+    def move(self, delta_time):
         self.y += 140 * delta_time
 
         if self.y > self.click_area.y + self.click_area.height + 10:
             self.missed = True
-            handle_miss()
         
         self.draw()
 
@@ -30,6 +29,8 @@ class Dot(Sprite):
 
         if self.y + self.height > self.click_area.y - 10:
             hit = True
+
+            self.click_area.hit()
 
         return hit
         
