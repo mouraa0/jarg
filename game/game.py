@@ -85,13 +85,7 @@ def add_random_dot(active_notes, lanes, click_areas, colors):
     active_notes.append(new_dot)
 
 
-def verify_key_stroke(key, active_notes, key_timers, debounce_time, current_time):
-    if key_timers[key] > 0 and current_time - key_timers[key] < debounce_time:
-        key_timers[key] = current_time
-        return
-    
-    key_timers[key] = current_time
-
+def verify_key_stroke(key, active_notes):
     if key == active_notes[0].keyboard_key:
         did_hit = active_notes[0].handle_click()
 
@@ -144,15 +138,10 @@ def game_loop():
 
     active_notes = []
 
-    key_timers = {
-        'd': 0,
-        'f': 0,
-        'j': 0,
-        'k': 0,
-        'l': 0
-    }
+    keys = ['d', 'f', 'j', 'k', 'l']
 
     debounce_time = 0.2
+    click_time = 0
     elapsed_time = 0
     countdown = 30
 
@@ -160,6 +149,12 @@ def game_loop():
         janela.set_background_color((0, 0, 0))
 
         elapsed_time += janela.delta_time()
+
+        if click_time != 0:
+            click_time += janela.delta_time()
+
+            if click_time >= debounce_time:
+                click_time = 0
 
         if countdown > 0:
             countdown -= janela.delta_time()
@@ -170,9 +165,10 @@ def game_loop():
         if (teclado.key_pressed('w')):
             count_points()
 
-        for key in key_timers.keys():
-            if teclado.key_pressed(key):
-                verify_key_stroke(key, active_notes, key_timers, debounce_time, janela.delta_time())
+        for key in keys:
+            if teclado.key_pressed(key) and click_time == 0:
+                click_time += janela.delta_time()
+                verify_key_stroke(key, active_notes)
         
         if elapsed_time >= 1 and countdown >= 0:
             add_random_dot(active_notes, lanes, click_areas, colors)
