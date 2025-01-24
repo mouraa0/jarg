@@ -1,3 +1,4 @@
+import random
 from PPlay.window import *
 from PPlay.keyboard import *
 from PPlay.gameimage import *
@@ -74,6 +75,16 @@ def create_dot(color, lane, click_area):
     return Dot(asset_str, lane.x, lane.height, click_area, keyboard_key)
 
 
+def add_random_dot(active_notes, lanes, click_areas, colors):
+    random_lane_index = random.randint(0, len(lanes) - 1)
+    random_color = colors[random_lane_index]
+    random_lane = lanes[random_lane_index]
+    random_click_area = click_areas[random_lane_index]
+    
+    new_dot = create_dot(random_color, random_lane, random_click_area)
+    active_notes.append(new_dot)
+
+
 def verify_key_stroke(key, active_notes, key_timers, debounce_time, current_time):
     if key_timers[key] > 0 and current_time - key_timers[key] < debounce_time:
         key_timers[key] = current_time
@@ -127,15 +138,19 @@ def game_loop():
     chart_time = 0
     note_index = 0
 
-    chart = [
-        {"time": 1.0, "dot": create_dot('green', green_lane, green_click_area)},
-        {"time": 1.5, "dot": create_dot('red', red_lane, red_click_area)},
-        {"time": 2.0, "dot": create_dot('yellow', yellow_lane, yellow_click_area)},
-        {"time": 2.5, "dot": create_dot('blue', blue_lane, blue_click_area)},
-        {"time": 3.0, "dot": create_dot('orange', orange_lane, orange_click_area)},
-        {"time": 4.0, "dot": create_dot('green', green_lane, green_click_area)},
-        {"time": 4.0, "dot": create_dot('orange', orange_lane, orange_click_area)},
-    ]
+    lanes = [green_lane, red_lane, yellow_lane, blue_lane, orange_lane]
+    click_areas = [green_click_area, red_click_area, yellow_click_area, blue_click_area, orange_click_area]
+    colors = ['green', 'red', 'yellow', 'blue', 'orange']
+
+    # chart = [
+    #     {"time": 1.0, "dot": create_dot('green', green_lane, green_click_area)},
+    #     {"time": 1.5, "dot": create_dot('red', red_lane, red_click_area)},
+    #     {"time": 2.0, "dot": create_dot('yellow', yellow_lane, yellow_click_area)},
+    #     {"time": 2.5, "dot": create_dot('blue', blue_lane, blue_click_area)},
+    #     {"time": 3.0, "dot": create_dot('orange', orange_lane, orange_click_area)},
+    #     {"time": 4.0, "dot": create_dot('green', green_lane, green_click_area)},
+    #     {"time": 4.0, "dot": create_dot('orange', orange_lane, orange_click_area)},
+    # ]
 
     active_notes = []
 
@@ -146,10 +161,14 @@ def game_loop():
         'k': 0,
         'l': 0
     }
+
     debounce_time = 0.2
+    elapsed_time = 0
 
     while True:
         janela.set_background_color((0, 0, 0))
+
+        elapsed_time += janela.delta_time()
         
         if (teclado.key_pressed('esc')):
             return
@@ -157,14 +176,14 @@ def game_loop():
         if (teclado.key_pressed('w')):
             count_points()
         
-        if note_index < len(chart) and chart[note_index]['time'] < chart_time:
-            active_notes.append(chart[note_index]['dot'])
-            note_index += 1
+        for key in key_timers.keys():
+            if teclado.key_pressed(key):
+                verify_key_stroke(key, active_notes, key_timers, debounce_time, janela.delta_time())
         
-        if len(active_notes) > 0:
-             for key in key_timers.keys():
-                if teclado.key_pressed(key):
-                    verify_key_stroke(key, active_notes, key_timers, debounce_time, janela.delta_time())
+        if elapsed_time >= 1:
+            add_random_dot(active_notes, lanes, click_areas, colors)
+
+            elapsed_time = 0
         
         green_lane.draw()
         red_lane.draw()
