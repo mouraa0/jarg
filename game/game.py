@@ -130,6 +130,9 @@ def add_random_dot(active_notes, lanes, click_areas, colors):
 
 
 def verify_key_stroke(key, active_notes, click_areas):
+    if (len(active_notes) == 0):
+        return
+
     if key == active_notes[0].keyboard_key:
         did_hit = active_notes[0].handle_click()
 
@@ -255,7 +258,7 @@ def game_loop(janela, difficulty='easy'):
 
     keys = ['d', 'f', 'j', 'k', 'l']
 
-    debounce_time = 0.3
+    debounce_time = 0.2
     click_time = 0
     elapsed_time = 0
     maximum_elapsed_time = get_maximum_elapsed_time(difficulty)
