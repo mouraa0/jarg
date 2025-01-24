@@ -97,6 +97,36 @@ def verify_key_stroke(key, active_notes):
             handle_miss()
 
 
+def get_maximum_elapsed_time(difficulty):
+    if difficulty == 'easy':
+        return 1
+
+    if difficulty == 'medium':
+        return 0.5
+
+    if difficulty == 'hard':
+        return 0.25
+
+
+def get_countdown_time(difficulty):
+    if difficulty == 'easy':
+        return 30
+
+    if difficulty == 'medium':
+        return 60
+
+    if difficulty == 'hard':
+        return 90
+
+
+def format_countdown(countdown):
+    if countdown > 60:
+        minutes = int(countdown // 60)
+        seconds = int(countdown % 60)
+        return f"{minutes:02}:{seconds:02}"
+    else:
+        return str(round(countdown))
+
 
 janela = Window(800, 600)
 teclado = Keyboard()
@@ -127,7 +157,7 @@ points_area.set_position((janela.width / 2) - (points_area.width / 2), green_cli
 multiplier = GameImage('assets/game/combo_counter_1.png')
 multiplier.set_position((janela.width / 2) - (multiplier.width / 2), points_area.y + points_area.height + 25)
 
-def game_loop():
+def game_loop(difficulty='hard'):
     global points_amount
     chart_time = 0
     note_index = 0
@@ -143,7 +173,8 @@ def game_loop():
     debounce_time = 0.2
     click_time = 0
     elapsed_time = 0
-    countdown = 30
+    maximum_elapsed_time = get_maximum_elapsed_time(difficulty)
+    countdown = get_countdown_time(difficulty)
 
     while True:
         janela.set_background_color((0, 0, 0))
@@ -161,16 +192,13 @@ def game_loop():
         
         if (teclado.key_pressed('esc')):
             return
-        
-        if (teclado.key_pressed('w')):
-            count_points()
 
         for key in keys:
             if teclado.key_pressed(key) and click_time == 0:
                 click_time += janela.delta_time()
                 verify_key_stroke(key, active_notes)
         
-        if elapsed_time >= 1 and countdown >= 0:
+        if elapsed_time >= maximum_elapsed_time and countdown >= 0:
             add_random_dot(active_notes, lanes, click_areas, colors)
 
             elapsed_time = 0
@@ -182,8 +210,7 @@ def game_loop():
         orange_lane.draw()
 
         for note in active_notes:
-            note.move(janela.delta_time())
-
+            note.move(janela.delta_time(), handle_miss)
 
         active_notes = clean_active_notes(active_notes)
 
@@ -195,7 +222,7 @@ def game_loop():
 
         points_area.draw()
         janela.draw_text(get_points_in_string(), points_area.x + 8, points_area.y + points_area.height - 8 - 30, size=30, color=(255, 255, 255), font_name='Arial', bold=True, italic=False)
-        janela.draw_text(str(round(countdown)), 20, 20, size=30, color=(255, 255, 255), font_name='Arial', bold=True, italic=False)
+        janela.draw_text(format_countdown(countdown), 20, 20, size=30, color=(255, 255, 255), font_name='Arial', bold=True, italic=False)
 
         multiplier.draw()
 
