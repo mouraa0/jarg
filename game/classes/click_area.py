@@ -21,10 +21,10 @@ class ClickArea():
 
     def update(self):
         current_time = time.time()
-        if self.hit_timer and current_time - self.hit_timer >= 0.4:
+        if self.hit_timer and current_time - self.hit_timer >= 0.2:
             self.update_game_image(self.initial_path)
             self.hit_timer = 0
-        if self.miss_timer and current_time - self.miss_timer >= 0.4:
+        if self.miss_timer and current_time - self.miss_timer >= 0.2:
             self.update_game_image(self.initial_path)
             self.miss_timer = 0
         self.game_image.draw()
