@@ -1,12 +1,35 @@
+import json
 from PPlay.keyboard import *
 from PPlay.window import *
 from stats.classes.stat import Stat
 
+def save_stat(stat):
+    try:
+        with open('ranking.json', 'r') as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        data = []
+
+    data.append({
+        'date': stat.date,
+        'hour': stat.hour,
+        'score': stat.score,
+        'highest_streak': stat.highest_streak,
+        'misses': stat.misses
+    })
+
+    with open('ranking.json', 'w') as file:
+        json.dump(data, file, indent=4)
+
+        
 janela = Window(800, 600)
 teclado = Keyboard()
 
 def stats_loop(stat=Stat, is_end_game=False):
-   while True:
+    if is_end_game:
+        save_stat(stat)
+    
+    while True:
         janela.set_background_color((0, 0, 0))
 
         janela.draw_text('Stats', 20, 20, size=30, color=(255, 255, 255), font_name='Arial', bold=True, italic=False)

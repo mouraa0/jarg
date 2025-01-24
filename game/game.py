@@ -205,7 +205,7 @@ def end_game():
     if highest_streak < actual_streak:
         highest_streak = actual_streak
 
-    return stats_loop(Stat(date_str, time_str, points_amount, highest_streak, total_misses))
+    return stats_loop(Stat(date_str, time_str, points_amount, highest_streak, total_misses), True)
     
 
 def game_loop(janela, difficulty='easy'):
