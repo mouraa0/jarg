@@ -7,14 +7,23 @@ from game.classes.dot import *
 from game.classes.lane import *
 from game.classes.click_area import *
 from game.classes.multiplier import *
+from stats.classes.stat import Stat
+from stats.stats import stats_loop
 
 global points_amount
 global multiplier_amount
 global multiplier_streak_amount
 global combo_counter
+global total_misses
+global highest_streak
+global actual_streak
+
 multiplier_amount = 1
+actual_streak = 0
 multiplier_streak_amount = 0
 points_amount = 0
+highest_streak = 0
+total_misses = 0
 
 
 def get_points_in_string():
@@ -30,16 +39,28 @@ def count_points():
 def handle_miss(click_area):
     global multiplier_amount
     global multiplier_streak_amount
+    global total_misses
+    global actual_streak
+    global highest_streak
+
     click_area.miss()
     multiplier_amount = 1
     multiplier_streak_amount = 0
+    total_misses += 1
+
+    if actual_streak > highest_streak:
+        highest_streak = actual_streak
+
+    actual_streak = 0
 
 
 def handle_hit():
     global multiplier_amount
     global multiplier_streak_amount
     global points_amount
-    print(f'points gained: {4 * multiplier_amount}')
+    global actual_streak
+
+    actual_streak += 1
 
     points_amount += 4 * multiplier_amount
 
@@ -56,7 +77,6 @@ def handle_hit():
         multiplier_streak_amount = 3
 
         return
-
 
     multiplier_amount += 1
     multiplier_streak_amount = 0  
@@ -154,7 +174,7 @@ def get_maximum_elapsed_time(difficulty):
 
 def get_countdown_time(difficulty):
     if difficulty == 'easy':
-        return 30
+        return 10
 
     if difficulty == 'medium':
         return 60
@@ -170,40 +190,55 @@ def format_countdown(countdown):
         return f"{minutes:02}:{seconds:02}"
     else:
         return str(round(countdown))
+    
 
+def end_game():
+    global points_amount
+    global highest_streak
+    global total_misses
 
-janela = Window(800, 600)
-teclado = Keyboard()
-lanes_area_width = janela.width / 3
+    if highest_streak < actual_streak:
+        highest_streak = actual_streak
 
-green_lane = Lane('assets/game/lane.png', lanes_area_width, 0, True)
-lanes_spacement = (lanes_area_width - (green_lane.width * 4)) / 4
-red_lane = Lane('assets/game/lane.png', lanes_area_width - green_lane.width, lanes_spacement)
-yellow_lane = Lane('assets/game/lane.png', red_lane.x, lanes_spacement)
-blue_lane = Lane('assets/game/lane.png', yellow_lane.x, lanes_spacement)
-orange_lane = Lane('assets/game/lane.png', blue_lane.x, lanes_spacement)
+    return stats_loop(Stat('20/20/2000', '20:20', points_amount, highest_streak, total_misses))
+    
 
-green_click_area = ClickArea('assets/game/dot_area.png', green_lane.x, green_lane.height)
-red_click_area = ClickArea('assets/game/dot_area.png', red_lane.x, red_lane.height)
-yellow_click_area = ClickArea('assets/game/dot_area.png', yellow_lane.x, yellow_lane.height)
-blue_click_area = ClickArea('assets/game/dot_area.png', blue_lane.x, blue_lane.height)
-orange_click_area = ClickArea('assets/game/dot_area.png', orange_lane.x, orange_lane.height)
+def game_loop(janela, difficulty='easy'):
+    teclado = Keyboard()
+    lanes_area_width = janela.width / 3
 
-green_dot = Dot('assets/game/green_dot.png', green_lane.x, green_lane.height, green_click_area)
-red_dot = Dot('assets/game/red_dot.png', red_lane.x, red_lane.height, red_click_area)
-yellow_dot = Dot('assets/game/yellow_dot.png', yellow_lane.x, yellow_lane.height, yellow_click_area)
-blue_dot = Dot('assets/game/blue_dot.png', blue_lane.x, blue_lane.height, blue_click_area)
-orange_dot = Dot('assets/game/orange_dot.png', orange_lane.x, orange_lane.height, orange_click_area)
+    green_lane = Lane('assets/game/lane.png', lanes_area_width, 0, True)
+    lanes_spacement = (lanes_area_width - (green_lane.width * 4)) / 4
+    red_lane = Lane('assets/game/lane.png', lanes_area_width - green_lane.width, lanes_spacement)
+    yellow_lane = Lane('assets/game/lane.png', red_lane.x, lanes_spacement)
+    blue_lane = Lane('assets/game/lane.png', yellow_lane.x, lanes_spacement)
+    orange_lane = Lane('assets/game/lane.png', blue_lane.x, lanes_spacement)
 
-points_area = GameImage('assets/game/points_area.png')
-points_area.set_position((janela.width / 2) - (points_area.width / 2), green_click_area.y + green_click_area.height + 25)
+    green_click_area = ClickArea('assets/game/dot_area.png', green_lane.x, green_lane.height)
+    red_click_area = ClickArea('assets/game/dot_area.png', red_lane.x, red_lane.height)
+    yellow_click_area = ClickArea('assets/game/dot_area.png', yellow_lane.x, yellow_lane.height)
+    blue_click_area = ClickArea('assets/game/dot_area.png', blue_lane.x, blue_lane.height)
+    orange_click_area = ClickArea('assets/game/dot_area.png', orange_lane.x, orange_lane.height)
 
-multiplier = Multiplier('assets/game/combo_counters/combo_counter_1_0.png', (janela.width / 2), points_area.y + points_area.height + 25)
+    points_area = GameImage('assets/game/points_area.png')
+    points_area.set_position((janela.width / 2) - (points_area.width / 2), green_click_area.y + green_click_area.height + 25)
 
-def game_loop(difficulty='hard'):
+    multiplier = Multiplier('assets/game/combo_counters/combo_counter_1_0.png', (janela.width / 2), points_area.y + points_area.height + 25)
+
     global points_amount
     global multiplier_amount
     global multiplier_streak_amount
+    global combo_counter
+    global total_misses
+    global highest_streak
+    global actual_streak
+
+    multiplier_amount = 1
+    actual_streak = 0
+    multiplier_streak_amount = 0
+    points_amount = 0
+    highest_streak = 0
+    total_misses = 0
 
     chart_time = 0
 
@@ -222,6 +257,7 @@ def game_loop(difficulty='hard'):
     countdown = get_countdown_time(difficulty)
     initial_countdown = 0
     initial_countdown_limit = 2
+    final_countdown = 0
     game_started = False
 
     while True:
@@ -229,6 +265,12 @@ def game_loop(difficulty='hard'):
 
         if game_started:
             elapsed_time += janela.delta_time()
+        
+        if countdown <= 0 and len(active_notes) == 0:
+            final_countdown += janela.delta_time()
+
+            if final_countdown >= 2:
+                return end_game()
 
         if initial_countdown < initial_countdown_limit:
             initial_countdown += janela.delta_time()
